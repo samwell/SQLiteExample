@@ -1,30 +1,39 @@
 #include <iostream>
+#include <string>
 #include "DatabaseConnection.h"
 
 using namespace std;
 
 int main() {
-   DatabaseConnection db;
-   try {
-      list<multimap<string, string> > results = db.execute(const_cast<char *>("SELECT * FROM test;"));
-      list<multimap<string, string> >::iterator rows = results.begin();
+	DatabaseConnection db;
+	try {
+		db.execute(const_cast<char *>("SELECT * FROM test;"));
 
-      while(rows != results.end()) {
-         multimap<string, string>::iterator row = (*rows).begin();
-         while(row != (*rows).end()) {
-            cout << (*row).first << " " << (*row).second << " ";
-            row++;
-         }
+		list<string> columns = db.getColumns();
+		for(list<string>::iterator i = columns.begin(); i != columns.end(); i++)
+			cout << (*i) << endl;
 
-         cout << endl;
+		cout << "ID: " << db.getColumn(const_cast<char *>("id")) << " NAME: " << db.getColumn(const_cast<char *>("name")) << endl;
 
-         rows++;
-      }
-   } catch (DatabaseConnectionException e) {
-      cout << e.getMessage();
-   }
+		list<multimap<string, string> > results = db.fetchAll();
+		list<multimap<string, string> >::iterator rows = results.begin();
 
-   db.close();
+		while(rows != results.end()) {
+			multimap<string, string>::iterator row = (*rows).begin();
+			while(row != (*rows).end()) {
+				cout << (*row).first << " " << (*row).second << " ";
+				row++;
+			}
 
-   return 0;
+			cout << endl;
+
+			rows++;
+		}
+	} catch (DatabaseConnectionException e) {
+		cout << e.getMessage();
+	}
+
+	db.close();
+
+	return 0;
 }
