@@ -25,8 +25,11 @@ public:
    void finalize();
    void execute(char * query);
    bool next();
+   int columnCount();
    list<string> getColumns();
    string getColumn(char * colName);
-   int columnCount();
+   int getInt(char * colName);
+   double getDouble(char * colName);
+   string getText(char * colName);
    list<multimap<string, string> > fetchAll();
 };

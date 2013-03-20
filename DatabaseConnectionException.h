@@ -1,21 +1,47 @@
 #include <iostream>
+#include <string>
+#include <sstream>
 #include "sqlite3.h"
 
 using namespace std;
 
 class DatabaseConnectionException {
 private:
-	const char * message;
+	//stringstream strMessage;
+	string message;
+	int num;
 public:
 	static const int IS_NOT_PREPARED = -1;
 	static const int COLUMN_NOT_FOUND = -2;
-	DatabaseConnectionException(int status) { 
+	static const int COLUMN_NOT_INT = -3;
+	static const int COLUMN_NOT_FLOAT = -4;
+	static const int COLUMN_NOT_BLOB = -5;
+	static const int COLUMN_NOT_TEXT = -6;
+	static const int NO_ROW = -7;
+
+	DatabaseConnectionException(int status, int lineNum) {
+		num = lineNum;
 		switch(status) {
 			case IS_NOT_PREPARED:
 				message = "Error Code: -1, Message: Statement has not been prepared";
 				break;
 			case COLUMN_NOT_FOUND:
 				message = "Error Code: -2, Message: Column couldn't be found";
+				break;
+			case COLUMN_NOT_INT:
+				message = "Error Code: -3, Message: Statement has not been prepared";
+				break;
+			case COLUMN_NOT_FLOAT:
+				message = "Error Code: -4, Message: Column couldn't be found";
+				break;
+			case COLUMN_NOT_BLOB:
+				message = "Error Code: -5, Message: Statement has not been prepared";
+				break;
+			case COLUMN_NOT_TEXT:
+				message = "Error Code: -6, Message: Column couldn't be found";
+				break;
+			case NO_ROW:
+				message = "Error Code: -7, Message: There is no row to select from, 'next()' might need to be called before";
 				break;
 			case SQLITE_ERROR:
 				message = "Error Code: 1, Message: SQL error or missing database";
@@ -104,9 +130,14 @@ public:
 			default:
 				message = "Unknown error code, Error Code: " + status;
 		}
+
+		//strMessage << message;
+		//strMessage << "Line Number: " << lineNum << ", " << message;
 	}
 
-	const char * getMessage() const {
-		return message;
+	string getMessage() const {
+		stringstream messageStream;
+		messageStream << "Line number: " << num << ", " << message << endl;
+		return messageStream.str();
 	}
 };
