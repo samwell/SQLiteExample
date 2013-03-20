@@ -1,5 +1,7 @@
+FLAGS=-Wall -Werror
+LIBS=-lpthread -ldl
 all: sqlite3.o
-		g++ sqlite3.o DatabaseConnection.cpp SQLiteExample.cpp -lpthread -ldl
+		g++ $(FLAGS) sqlite3.o DatabaseConnection.cpp SQLiteExample.cpp $(LIBS)  
 
 sqlite3.o:
-		gcc sqlite3.c -c
+		gcc $(FLAGS) sqlite3.c -c
